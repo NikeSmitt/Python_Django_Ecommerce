@@ -1,0 +1,41 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+    <div class="container">
+    <main class="pt-5">
+        <div class="row">
+            <div class="col-md-5">
+                <img src="{{ product.image.url }}" alt="Product image" class="img-fluid w-50 mx-auto">
+            </div>
+            <div class="col-md-7">
+                <h1 class="h4 mb-0">{{ product.title|title }}</h1>
+                <p class="mb-0"><span class="text-secondary ">Author: </span><span class="lead">{{ product.author|title }}</span></p>
+                <p class="mb-2"><span class="text-secondary">Description: </span><span>{{ product.description }}</span></p>
+                <div class="border">
+                    <div class="col border-bottom">
+                        <div class="row p-3">
+                            <div class="col-6">Hardback</div>
+                            <div class="col-6 text-end">$ {{ product.price }}</div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="row p-3">
+                            <div class="col-6 my-auto">
+                                <label for="select">Quantity</label>
+                                <select name="select" id="select">
+                                    <option value="">1</option>
+                                    <option value="">2</option>
+                                    <option value="">3</option>
+                                    <option value="">4</option>
+                                </select>
+                            </div>
+                            <div class="col-6 text-end"><button type="button" class="btn btn-primary">Add to basket</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    </div>
+
+{% endblock %}
