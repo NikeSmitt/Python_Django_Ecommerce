@@ -1,15 +1,19 @@
 import os.path
 from pathlib import Path
 
+import environ
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env()
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%$)^nwno-=gz=o5#$8%!2@2#+==aw&&i@-ugn_rh_u%8(7--zi'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -28,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # my apps
     'store',
+    'basket',
 ]
 
 MIDDLEWARE = [
@@ -53,7 +58,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'store.context_processors.categories.get_category'
+                'store.context_processors.categories.get_category',
+                'basket.context_processors.get_basket',
             ],
         },
     },

@@ -17,7 +17,7 @@
                                 <p class="text-dark"><a href="{{ product.get_absolute_url }}"
                                                         class="text-decoration-none text-reset fw-bold">{{ product.title|title }}</a>
                                 </p>
-                                <p class="card-text text-secondary">{{ product.description }}</p>
+                                <p class="card-text text-secondary">{{ product.description|truncatewords:10 }}</p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
 
