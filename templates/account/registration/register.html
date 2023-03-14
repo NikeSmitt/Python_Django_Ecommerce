@@ -1,0 +1,40 @@
+{% extends 'account/registration/base.html' %}
+
+{% block title %}Registration{% endblock %}
+{% block form %}
+  <form class="p-4 rounded col-lg-10 mx-auto" action="" method="post">
+    {% csrf_token %}
+    <h3 class="mb-2">Create an account</h3>
+    <p class="mb-4 text-secondary">It's free and only takes a minute</p>
+
+    {% if form.errors %}
+      <p>Please correct the following errors:</p>
+      {% for field in form %}
+        {% if field.errors %}
+          <div class="alert alert-danger pb-0" role="alert">
+            {{ field.label }}: {{ field.errors }}
+          </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    <label class="form-label">{{ form.user_name.label }} <span class="text-muted small">(Required)</span> </label>
+    {{ form.user_name }}
+
+    <label class="form-label">{{ form.email.label }} <span class="text-muted small">(Required)</span> </label>
+    {{ form.email }}
+
+    <label class="form-label">{{ form.password_1.label }} <span class="text-muted small">(Required)</span> </label>
+    <small class="form-text text-muted mb-4 small">At least 8 characters and 1 digit</small>
+    {{ form.password_1 }}
+
+    <label class="form-label">{{ form.password_2.label }} <span class="text-muted small">(Required)</span> </label>
+    {{ form.password_2 }}
+
+    <button class="btn btn-primary py-2 mb-4 mt-5 w-100" type="submit">Register</button>
+    <p class="text-center">
+      <a href="{% url 'account:login' %}">Already have an account?</a>
+    </p>
+
+  </form>
+{% endblock %}

@@ -1,7 +1,7 @@
 from importlib import import_module
 
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.http import HttpRequest
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -14,7 +14,8 @@ class TestViewResponses(TestCase):
     
     def setUp(self) -> None:
         self.c = Client()
-        self.user = User.objects.create(username='admin')
+        user = get_user_model()
+        self.user = user.objects.create(user_name='admin')
         self.category = Category.objects.create(name='django', slug='django')
         self.product = Product.objects.create(
             category=self.category,

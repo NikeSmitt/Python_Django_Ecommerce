@@ -11,7 +11,7 @@
                         creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it
                         entirely.</p>
                     <p>
-                        <a href="#" class="btn btn-primary my-2">Make an account</a>
+                        <a href="{% url 'account:register' %}" class="btn btn-primary my-2">Make an account</a>
 
                     </p>
                 </div>
@@ -24,7 +24,7 @@
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 
                     {% for product in products %}
-                        <div class="col">
+                        <div class="col-2">
                             <div class="card shadow-sm p-3">
                                 <a href="{{ product.get_absolute_url }}" class="text-center">
                                     <img src="{{ product.image.url }}" alt="Product image" class="img-fluid w-50 ">

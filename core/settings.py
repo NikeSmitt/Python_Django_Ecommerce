@@ -1,6 +1,7 @@
 import os.path
 from pathlib import Path
 
+import django.core.mail.backends.console
 import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -33,6 +34,7 @@ INSTALLED_APPS = [
     # my apps
     'store',
     'basket',
+    'account',
 ]
 
 MIDDLEWARE = [
@@ -123,3 +125,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'account.UserBase'
+LOGIN_URL = '/account/login/'
+LOGIN_REDIRECT_URL = '/account/dashboard'
+LOGOUT_REDIRECT_URL = '/'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

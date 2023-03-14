@@ -1,0 +1,17 @@
+{% extends 'store/base.html' %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+  <main class="pt-5">
+    <div class="container-lg">
+      <div class="col-12">
+        <h2>Your dashboard</h2>
+      </div>
+      <div class="col-12 d-flex justify-content-between">
+        <div>Manage your <b>orders</b> and personal details</div>
+        <div><a href="{% url 'account:edit' %}">Change details</a></div>
+      </div>
+      <hr />
+    </div>
+  </main>
+{% endblock %}

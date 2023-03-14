@@ -1,0 +1,32 @@
+{% extends 'account/registration/base.html' %}
+{% load static %}
+{% block title %}
+  Login
+{% endblock %}
+{% block form %}
+  <form class="col-lg-10 mx-auto" action="{% url 'account:login' %}" method="post">
+    {% csrf_token %}
+    <h3 class="mb-2">Sign In</h3>
+    {% if form.errors %}
+      <div class="alert alert-danger" role="alert">
+        Please enter a correct email address and password.
+      </div>
+    {% endif %}
+
+    <label class="form-label">{{ form.username.label }}</label>
+    {{ form.username }}
+    <label class="form-label">{{ form.password.label }}</label>
+    {{ form.password }}
+    <div class="d-grid gap-2">
+      <input type="hidden" name="next" value="{{ next }}">
+      <button class="btn btn-primary py-2 mb-4 mt-5 w-100" type="submit">Sign In</button>
+    </div>
+  </form>
+  <p class="text-center">
+    <a href="{% url 'account:register' %}">Create an account</a>
+  </p>
+
+  <p class="text-center">
+    <a href="{% url 'account:password_reset' %}">Forgot a password?</a>
+  </p>
+{% endblock %}
