@@ -1,7 +1,11 @@
 from django.contrib import admin
 
-from account.models import UserBase
+from account.models import Customer, Address
 
-@admin.register(UserBase)
-class UserBaseAdmin(admin.ModelAdmin):
+
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
     pass
+
+
+admin.site.register(Address)

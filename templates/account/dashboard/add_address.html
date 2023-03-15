@@ -1,11 +1,12 @@
 {% extends 'account/base.html' %}
 {% block title %}
-  Reset password
+  Add Address
 {% endblock %}
 {% block form %}
-  <form class="col-lg-10 mx-auto" action="" method="post">
+  <form action="" class="" method="post">
     {% csrf_token %}
     {% if form.errors %}
+      <p>Please correct the following errors:</p>
       {% for field in form %}
         {% if field.errors %}
           <div class="alert alert-danger pb-0" role="alert">
@@ -13,11 +14,13 @@
           </div>
         {% endif %}
       {% endfor %}
-    {% else %}
-      <h3 class="mb-2">Forgot password?</h3>
     {% endif %}
     {{ form }}
-    <button class="btn btn-primary py-2 mb-4 mt-5 w-100" type="submit">Reset</button>
-
+    <button type="submit" class="btn btn-primary w-100">{% if 'update' in request.get_full_path %}
+      Save Address
+    {% else %}
+      Add Address
+    {% endif %}
+    </button>
   </form>
 {% endblock %}

@@ -3,7 +3,7 @@ from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, Set
     PasswordChangeForm
 from django.contrib.auth.password_validation import validate_password
 
-from .models import UserBase
+from .models import Customer, Address
 
 
 class RegistrationForm(forms.ModelForm):
@@ -29,13 +29,13 @@ class RegistrationForm(forms.ModelForm):
     
     def clean_user_name(self):
         user_name = self.cleaned_data['user_name'].lower()
-        if UserBase.objects.filter(user_name=user_name).exists():
+        if Customer.objects.filter(user_name=user_name).exists():
             raise forms.ValidationError('Username already exists')
         return user_name
     
     def clean_email(self):
         email = self.cleaned_data['email'].lower()
-        if UserBase.objects.filter(email=email).exists():
+        if Customer.objects.filter(email=email).exists():
             raise forms.ValidationError('Email already exists')
         return email
     
@@ -51,7 +51,7 @@ class RegistrationForm(forms.ModelForm):
         return cd['password_2']
     
     class Meta:
-        model = UserBase
+        model = Customer
         fields = ('user_name', 'email',)
 
 
@@ -72,21 +72,20 @@ class UserEditForm(UserChangeForm):
     email = forms.EmailField(label='Account email (can not be changed)', widget=forms.TextInput(
         attrs={'class': 'form-control mb-3', 'placeholder': 'email', 'id': 'form-email', 'readonly': 'readonly'}
     ))
-    user_name = forms.CharField(label='Username', widget=forms.TextInput(
-        attrs={'class': 'form-control mb-3', 'placeholder': 'username', 'id': 'form-username'}
+    name = forms.CharField(label='Name', widget=forms.TextInput(
+        attrs={'class': 'form-control mb-3', 'placeholder': 'Name', 'id': 'form-username'}
     ))
-    first_name = forms.CharField(label='First name', widget=forms.TextInput(
-        attrs={'class': 'form-control mb-3', 'placeholder': 'First Name', 'id': 'form-first-name'}
+    mobile = forms.CharField(label='Mobile', widget=forms.TextInput(
+        attrs={'class': 'form-control mb-3', 'placeholder': 'Mobile', 'id': 'form-first-name'}
     ))
     
     class Meta:
-        model = UserBase
-        fields = ('email', 'user_name', 'first_name',)
+        model = Customer
+        fields = ('email', 'name', 'mobile',)
     
     def __init__(self, *args, **kwargs):
         super(UserEditForm, self).__init__(*args, **kwargs)
         self.fields['email'].required = True
-        self.fields['user_name'].required = True
 
 
 class UserPasswordResetForm(PasswordResetForm):
@@ -98,7 +97,7 @@ class UserPasswordResetForm(PasswordResetForm):
     
     def clean_email(self):
         email = self.cleaned_data['email']
-        u = UserBase.objects.filter(email=email)
+        u = Customer.objects.filter(email=email)
         if not u:
             raise forms.ValidationError(
                 'Unfortunately we can not find that email address')
@@ -113,14 +112,14 @@ class SetUserPasswordForm(SetPasswordForm):
         self.fields['new_password1'].widget.attrs.update(
             {'class': 'form-control mb-3', 'placeholder': 'New password'}
         )
-
+        
         self.fields['new_password2'].widget.attrs.update(
             {'class': 'form-control', 'placeholder': 'New password'}
         )
 
 
 class UserPasswordChangeForm(PasswordChangeForm):
-
+    
     def __init__(self, *args, **kwargs):
         super(UserPasswordChangeForm, self).__init__(*args, **kwargs)
         
@@ -133,4 +132,21 @@ class UserPasswordChangeForm(PasswordChangeForm):
         self.fields['new_password2'].widget.attrs.update({
             'class': 'form-control', 'placeholder': 'Old password',
         })
+
+
+class AddAddressForm(forms.ModelForm):
+    class Meta:
+        model = Address
+        exclude = ('customer',)
+        # fields = '__all__'
         
+        widgets = {
+            'full_name': forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Full Name'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Phone'}),
+            'postcode': forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Postcode'}),
+            'address_line': forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Address line'}),
+            'address_line2': forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Address line 2'}),
+            'town_city': forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Town'}),
+            'delivery_instructions': forms.TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Delivery instructions'}),
+            'default': forms.CheckboxInput(attrs={'class': 'form-check-input mb-3'}),
+        }

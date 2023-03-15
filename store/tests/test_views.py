@@ -15,12 +15,11 @@ class TestViewResponses(TestCase):
     def setUp(self) -> None:
         self.c = Client()
         user = get_user_model()
-        self.user = user.objects.create(user_name='admin')
+        self.user = user.objects.create(name='admin')
         self.category = Category.objects.create(name='django', slug='django')
         self.product = Product.objects.create(
             category=self.category,
             title='Django initial',
-            created_by=self.user,
             author='admin',
             description='123',
             slug='django-initial',

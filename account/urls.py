@@ -3,7 +3,7 @@ from django.urls import path, reverse_lazy
 from django.views.generic import TemplateView
 
 from . import views
-from .forms import UserLoginForm, UserPasswordResetForm, SetUserPasswordForm
+from .forms import UserLoginForm
 
 app_name = 'account'
 
@@ -22,6 +22,14 @@ urlpatterns = [
          name='reset_password_sent'),
     path('password_reset_confirm/<uidb64>/<token>', views.UserPasswordResetConfirm.as_view(),
          name='reset_password_confirm'),
-    path('reset/complete/', TemplateView.as_view(template_name='account/user/password_reset_complete.html'), name='password_reset_complete'),
+    path('reset/complete/', TemplateView.as_view(template_name='account/user/password_reset_complete.html'),
+         name='password_reset_complete'),
+    
+    # dashboard addresses
+    path('addresses/all/', views.AddressesListView.as_view(), name='addresses'),
+    path('addresses/create/', views.CreateAddressView.as_view(), name='create_address'),
+    path('addresses/delete/<pk>/', views.delete_address, name='delete_address'),
+    path('addresses/update/<pk>/', views.UpdateAddressView.as_view(), name='edit_address'),
+    path('addresses/setdefault/<slug:slug>/', views.set_address_default, name='set_default_address'),
 
 ]

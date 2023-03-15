@@ -1,15 +1,26 @@
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LogoutView, PasswordResetView, PasswordResetConfirmView, PasswordChangeView
 from django.contrib.sites.shortcuts import get_current_site
-from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.views import View
+from django.views.generic import ListView, FormView, CreateView, UpdateView
 
-from .forms import RegistrationForm, UserEditForm, UserPasswordResetForm, SetUserPasswordForm, UserPasswordChangeForm
-from .models import UserBase
+from .forms import (
+    RegistrationForm,
+    UserEditForm,
+    UserPasswordResetForm,
+    SetUserPasswordForm,
+    UserPasswordChangeForm,
+    AddAddressForm,
+)
+from .models import Customer, Address
 from .token import account_activation_token
 
 
@@ -47,7 +58,7 @@ def account_register(request):
 def account_activate(request, uidb64, token):
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
-        user = UserBase.objects.get(pk=uid)
+        user = Customer.objects.get(pk=uid)
     except ValueError as e:
         print(e)
         return render(request, 'account/registration/activation_invalid.html')
@@ -62,12 +73,7 @@ def account_activate(request, uidb64, token):
 
 @login_required
 def dashboard(request):
-    return render(request, 'account/user/dashboard.html', context={})
-
-
-# class UserLoginView(LoginView):
-#     template_name = 'account/registration/login.html',
-#     form_class = UserLoginForm,
+    return render(request, 'account/dashboard/dashboard.html', context={})
 
 
 class UserLogoutView(LogoutView):
@@ -83,12 +89,12 @@ def edit_details(request):
     else:
         user_form = UserEditForm(instance=request.user)
     
-    return render(request, 'account/user/edit_details.html', {'form': user_form})
+    return render(request, 'account/dashboard/edit_details.html', {'form': user_form})
 
 
 @login_required
 def delete_user(request):
-    user = UserBase.objects.get(email=request.user.email)
+    user = Customer.objects.get(email=request.user.email)
     logout(request)
     user.is_active = False
     user.save()
@@ -106,10 +112,52 @@ class UserPasswordResetConfirm(PasswordResetConfirmView):
     form_class = SetUserPasswordForm
     success_url = reverse_lazy('account:password_reset_complete')
     template_name = 'account/user/reset_password_confirm.html'
-    
-    
+
+
 class UserPasswordChangeView(PasswordChangeView):
     template_name = 'account/user/change_password.html'
     success_url = reverse_lazy('account:dashboard')
     form_class = UserPasswordChangeForm
+
+
+class AddressesListView(ListView, LoginRequiredMixin):
+    model = Address
+    template_name = 'account/dashboard/addresses.html'
+    context_object_name = 'addresses'
     
+    def get_queryset(self):
+        return Address.objects.filter(customer=self.request.user)
+
+
+class CreateAddressView(CreateView, LoginRequiredMixin):
+    form_class = AddAddressForm
+    success_url = reverse_lazy('account:addresses')
+    template_name = 'account/dashboard/add_address.html'
+    
+    def form_valid(self, form):
+        form.instance.customer = self.request.user
+        form.save()
+        return super().form_valid(form)
+
+
+@login_required
+def delete_address(request, pk):
+    address = get_object_or_404(Address, pk=pk)
+    address.delete()
+    return redirect('account:addresses')
+
+
+class UpdateAddressView(UpdateView, LoginRequiredMixin):
+    form_class = AddAddressForm
+    model = Address
+    success_url = reverse_lazy('account:addresses')
+    template_name = 'account/dashboard/add_address.html'
+
+
+@login_required
+def set_address_default(request, slug):
+    address = get_object_or_404(Address, pk=slug)
+    Address.objects.filter(customer=request.user, default=True).update(default=False)
+    address.default = True
+    address.save()
+    return HttpResponseRedirect(reverse('account:addresses'))
