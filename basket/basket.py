@@ -8,6 +8,8 @@ class Basket:
     class for utilize basket
     """
     
+    DELIVERY_COST = Decimal(11.50)
+    
     def __init__(self, request):
         self.session = request.session
         self.basket = self.session.setdefault('basket', {})
@@ -22,7 +24,7 @@ class Basket:
         ####################################################################################
         
         if product_id not in self.basket:
-            self.basket[product_id] = {'quantity': quantity, 'price': str(product.price)}
+            self.basket[product_id] = {'quantity': quantity, 'price': str(product.regular_price)}
         else:
             new_quantity = int(self.basket[product_id]['quantity']) + quantity
             self.basket[product_id]['quantity'] = new_quantity
@@ -51,6 +53,9 @@ class Basket:
         total_price = sum([Decimal(item['price']) * int(item['quantity']) for item in self.basket.values()])
         return total_price
     
+    def get_total_price_with_delivery(self):
+        return self.DELIVERY_COST + self.get_total_price()
+    
     def get_product_total(self, product_id: int):
         """Get total product price in basket"""
         product = self.basket[str(product_id)]
@@ -66,6 +71,6 @@ class Basket:
             basket[str(product.id)]['product'] = product
         
         for item in basket.values():
-            item['total_price'] = item['product'].price * int(item['quantity'])
+            item['total_price'] = item['product'].regular_price * int(item['quantity'])
             
             yield item

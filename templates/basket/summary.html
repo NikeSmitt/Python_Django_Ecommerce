@@ -19,10 +19,13 @@
         {% with product=item.product %}
           <div class="row border mb-4 p-3" id="product-{{ product.id }}">
             <div class="col-md-3 col-lg-2 order-md-first bg-light order-last">
-              <a href="{{ product.get_absolute_url }}">
-                <img src="{{ product.image.url }}" alt="Product image" class="img-fluid mx-auto d-block"
-                     style="width: 120px">
-              </a>
+              {% for image in product.product_image.all %}
+                {% if image.is_feature %}
+                  <a href="{{ product.get_absolute_url }}" class="text-center">
+                    <img src="{{ image.image.url }}" alt="Product image" class="img-fluid ">
+                  </a>
+                {% endif %}
+              {% endfor %}
             </div>
             <div class="col-md-9 ">
               <div class="h5 p-2"><a class="text-decoration-none text-dark"
@@ -78,9 +81,9 @@
           <div class="">Sub Total: <span class="fw-bold">$ </span>
             <div id="basket-total" class="d-inline-flex fw-bold">{{ basket.get_total_price }}</div>
           </div>
-          <div id="">Shipping <span class="small">(Next day delivery)</span>: <span class="fw-bold">£11.50</span></div>
-          <div class="pt-2">Total to pay: <span class="fw-bold h5">£</span>
-            <span id="total" class="fw-bold h5">{{ basket.get_total_price }}</span>
+          <div id="">Shipping <span class="small">(Next day delivery)</span>: <span class="fw-bold">£ {{ basket.DELIVERY_COST|floatformat:2 }}</span></div>
+          <div class="pt-2">Total to pay: <span class="fw-bold h5">$ </span>
+            <span id="total" class="fw-bold h5">{{ basket.get_total_price_with_delivery}}</span>
           </div>
 
         </div>
@@ -137,6 +140,7 @@
                   $('#basket-qty').text(json.basket_qty)
                   $('#basket-total').text(json.basket_price)
                   $(`#product-total-${productId}`).text(json.product_total)
+                  $(`#total`).text(json.total_to_pay)
               },
               error: (xhr, errmsg, err) => {
                   console.log(err)

@@ -49,7 +49,8 @@ def basket_update(request):
         basket_qty = len(basket)
         basket_price = basket.get_total_price()
         product_total = basket.get_product_total(product_id)
+        total_to_pay = basket.DELIVERY_COST + basket_price
         return JsonResponse(
-            {'basket_qty': basket_qty, 'basket_price': basket_price, 'product_total': product_total}
+            {'basket_qty': basket_qty, 'basket_price': basket_price, 'product_total': product_total, 'total_to_pay': total_to_pay}
         )
     

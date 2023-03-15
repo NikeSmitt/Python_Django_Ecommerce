@@ -2,49 +2,52 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 
-    <main>
-        <section class="py-5 text-center container">
-            <div class="row py-lg-3">
-                <div class="col-lg-6 col-md-8 mx-auto">
-                    <h1 class="text-">Courses Store</h1>
-                    <p class="lead text-muted">Something short and leading about the collection below—its contents, the
-                        creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it
-                        entirely.</p>
-                    <p>
-                        <a href="{% url 'account:register' %}" class="btn btn-primary my-2">Make an account</a>
+  <main>
+    <section class="py-5 text-center container">
+      <div class="row py-lg-3">
+        <div class="col-lg-6 col-md-8 mx-auto">
+          <h1 class="text-">Courses Store</h1>
+          <p class="lead text-muted">Something short and leading about the collection below—its contents, the
+            creator, etc. Make it short and sweet, but not too short so folks don’t simply skip over it
+            entirely.</p>
+          <p>
+            <a href="{% url 'account:register' %}" class="btn btn-primary my-2">Make an account</a>
 
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <div class="album py-5 bg-light">
-            <div class="container">
-                <h1 class="text-center mb-5">All books</h1>
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-
-                    {% for product in products %}
-                        <div class="col-2">
-                            <div class="card shadow-sm p-3">
-                                <a href="{{ product.get_absolute_url }}" class="text-center">
-                                    <img src="{{ product.image.url }}" alt="Product image" class="img-fluid w-50 ">
-                                </a>
-                                <div class="card-body">
-                                    <p class="text-dark">
-                                        <a href="{{ product.get_absolute_url }}"
-                                           class="text-decoration-none text-reset fw-bold">{{ product.title|title }}
-                                        </a>
-                                    </p>
-                                    <p class="card-text text-secondary">{{ product.description|truncatewords:8 }}</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
+          </p>
         </div>
-    </main>
+      </div>
+    </section>
+
+    <div class="album py-5 bg-light">
+      <div class="container">
+        <h1 class="text-center mb-5">All books</h1>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+
+          {% for product in products %}
+            <div class="col-2">
+              <div class="card shadow-sm p-3">
+                {% for image in product.product_image.all %}
+                  {% if image.is_feature %}
+                    <a href="{{ product.get_absolute_url }}" class="text-center">
+                      <img src="{{ image.image.url }}" alt="Product image" class="img-fluid w-50 ">
+                    </a>
+                  {% endif %}
+                {% endfor %}
+                <div class="card-body text-center">
+                  <p class="text-dark">
+                    <a href="{{ product.get_absolute_url }}"
+                       class="text-decoration-none text-reset fw-bold">{{ product.title|title }}
+                    </a>
+                  </p>
+                  <p class="card-text text-secondary">{{ product.description|truncatewords:8 }}</p>
+                  <div class="h4">${{ product.regular_price }}</div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </main>
 
 {% endblock %}
